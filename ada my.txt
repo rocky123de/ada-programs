@@ -1,0 +1,627 @@
+MIN COINS
+
+#include<iostream>
+#include<bits/stdc++.h>
+
+using namespace std;
+
+int i,j;
+
+int minCoins(int max,int coins[],int n ) {
+        int T[n][max+1];
+        for(i=0;i<n;i++) {
+                for(j=0;j<=max;j++) {
+                        if(coins[i]==1)
+                                T[i][j]=j;
+                        else if(j>=coins[i])
+                                T[i][j]=min( 1+T[i][j-coins[i]],T[i-1][j] );
+                        else
+                                T[i][j]=T[i-1][j];
+                }
+        }
+         for(i=0;i<n;i++) {
+                for(j=0;j<=max;j++) {
+                        cout<<T[i][j]<<"\t";
+                }
+                cout<<endl;
+         }
+         return T[n-1][max];
+
+}
+
+int main() {
+        int max=11;
+        int n=4;
+        int coins[]={9,6,5,1};
+        sort(coins,coins+n);
+        cout<<minCoins(max,coins,n)<<endl;
+    return 0;
+}
+
+******************************************************************************************************************************************************************************************
+QUICK SORT	
+
+#include <iostream>
+void quickSort(int a[], int first, int last) {
+int pivot, i, j;
+if(first < last) {
+pivot = first;
+i = first;
+j = last;
+while (i < j) {
+while(a[i] <= a[pivot] && i < last)
+i++;
+while(a[j] > a[pivot])
+j--;
+if(i < j) {
+std::swap(a[i], a[j]);
+}
+}
+std::swap(a[pivot], a[j]);
+quickSort(a, first, j - 1);
+quickSort(a, j + 1, last);
+}
+}
+int main() {
+int a[100], number, i;
+std::cout << "Please Enter the total Number of Elements: ";
+std::cin >> number;
+std::cout << "Please Enter the Array Elements: ";
+for(i = 0; i < number; i++)
+std::cin >> a[i];
+quickSort(a, 0, number - 1);
+std::cout << "Quick Sort Result: ";
+for(i = 0; i < number; i++) {
+std::cout << a[i] << " ";
+}
+std::cout << std::endl;
+return 0;
+}
+*******************************************************************************************************************************************************************************************
+0/1 KNAPSACK
+
+#include <bits/stdc++.h>
+using namespace std;
+void knapSack(int W, int wt[], int val[], int n)
+{
+    int dp[n + 1][W + 1];
+    for (int i = 0; i <= n; i++)
+    {
+        for (int j = 0; j <= W; j++)
+        {
+            if (i == 0 || j == 0)
+            {
+                dp[i][j] = 0;
+            }
+            else if (wt[i - 1] <= j)
+            {
+                dp[i][j] = max(val[i - 1] + dp[i - 1][j - wt[i - 1]], dp[i - 1][j]);
+            }
+            else
+            {
+                dp[i][j] = dp[i - 1][j];
+            }
+        }
+    }
+    for (int i = 0; i <= n; i++)
+    {
+        for (int j = 0; j <= W; j++)
+            cout << dp[i][j] << " ";
+        cout << endl;
+    }
+    int i=n,j=W;
+    while(i>0&&j>0)
+    {
+    if(dp[i][j]==dp[i-1][j])
+    {
+        printf("OBJECT %d = 0\n",i--);
+    }
+    else
+    {
+        printf("OBJECT %d = 1\n",i--);
+        j=j-wt[i];
+    }
+    }
+    cout<<"the total profit is  "<<dp[n][W];
+}
+int main()
+{
+    int val[10],wt[10],n,W;
+    cout<<"Enter number of objects and cap:\t";
+    cin>>n>>W;
+    cout<<"Enter weight for each:\n";
+    for(int i=0;i<n;i++)
+        cin>>wt[i];
+        cout<<"enter profits of each object"<<endl;
+    for(int i=0;i<n;i++)
+        cin>>val[i];
+    knapSack(W, wt, val, n);
+    
+    return 0;
+}
+********************************************************************************************************************************************************************************************
+MERGE SORT
+
+#include <iostream>
+
+using namespace std;
+
+// A function to merge the two half into a sorted data.
+void Merge(int *a, int low, int high, int mid)
+{
+        // We have low to mid and mid+1 to high already sorted.
+        int i, j, k, temp[high-low+1];
+        i = low;
+        k = 0;
+        j = mid + 1;
+
+        // Merge the two parts into temp[].
+        while (i <= mid && j <= high)
+        {
+                if (a[i] < a[j])
+                {
+                        temp[k] = a[i];
+                        k++;
+                        i++;
+                }
+                else
+                {
+                        temp[k] = a[j];
+                        k++;
+                        j++;
+                }
+        }
+
+        // Insert all the remaining values from i to mid into temp[].
+        while (i <= mid)
+        {
+                temp[k] = a[i];
+                k++;
+                i++;
+        }
+
+        // Insert all the remaining values from j to high into temp[].
+        while (j <= high)
+        {
+                temp[k] = a[j];
+                k++;
+                j++;
+        }
+
+
+        // Assign sorted data stored in temp[] to a[].
+        for (i = low; i <= high; i++)
+        {
+                a[i] = temp[i-low];
+        }
+}
+
+// A function to split array into two parts.
+void MergeSort(int *a, int low, int high)
+{
+        int mid;
+        if (low < high)
+        {
+                mid=(low+high)/2;
+                // Split the data into two half.
+                MergeSort(a, low, mid);
+                MergeSort(a, mid+1, high);
+
+                // Merge them to get sorted output.
+                Merge(a, low, high, mid);
+        }
+}
+
+int main()
+{
+        int n, i;
+        cout<<"\nEnter the number of data element to be sorted: ";
+        cin>>n;
+
+        int arr[n];
+        for(i = 0; i < n; i++)
+        {
+                cout<<"Enter element "<<i+1<<": ";
+                cin>>arr[i];
+        }
+
+        MergeSort(arr, 0, n-1);
+
+        // Printing the sorted data.
+        cout<<"\nSorted Data ";
+        for (i = 0; i < n; i++)
+        cout<<"->"<<arr[i];
+
+        return 0;
+}
+***************************************************************************************************************************************************************************************
+
+TSP
+
+#include <iostream>
+using namespace std;
+
+const int MAXN = 15;
+
+int n; // number of cities
+int d[MAXN][MAXN]; // distance between cities
+int path[MAXN]; // current path
+bool st[MAXN]; // whether a city has been visited
+int ans = 1e9; // current minimum distance
+
+void dfs(int u, int dis)
+{
+  if (u == n)
+  {
+    ans = min(ans, dis + d[path[n]][1]); // complete the round trip
+    return;
+  }
+  for (int i = 2; i <= n; i++)
+  {
+    if (!st[i])
+    {
+      path[u + 1] = i;
+      st[i] = true;
+      dfs(u + 1, dis + d[path[u]][i]);
+      st[i] = false;
+    }
+  }
+}
+
+int main()
+{
+  cout << "Enter the number of cities: ";
+  cin >> n;
+  cout << "Enter the distance between the cities: " << endl;
+  for (int i = 1; i <= n; i++)
+  {
+    for (int j = 1; j <= n; j++)
+    {
+      cout << "Distance from city " << i << " to city " << j << ": ";
+      cin >> d[i][j];
+    }
+  }
+  path[1] = 1;
+  st[1] = true;
+  dfs(1, 0);
+  cout << "Minimum distance: " << ans << endl;
+  return 0;
+}
+******************************************************************************************************************************************************************************************
+BFS 
+
+
+#include<iostream>
+using namespace std;
+int visited[10];
+void bfs(int n,int a[10][10],int source)
+{
+int i,q[10],u,front=1,rear=1;
+visited[source]=1;
+q[rear]=source;
+while(front<=rear)
+{
+u=q[front];
+front++;
+for(i=1;i<=n;i++)
+if(a[u][i]==1 && visited[i]==0)
+{
+rear++;
+q[rear]=i;
+visited[i]=1;
+}
+}
+}
+int main()
+{
+int n,a[10][10],i,j,source;
+cout<<"Enter the number of nodes : ";
+cin>>n;
+cout<<"Enter the adjacency matrix :\n";
+for(i=1;i<=n;i++)
+for(j=1;j<=n;j++)
+cin>>a[i][j];
+cout<<"Enter the source : ";
+cin>>source;
+for(i=1;i<=n;i++)
+visited[i]=0;
+bfs(n,a,source);
+for(i=1;i<=n;i++)
+{
+if(visited[i]==0)
+cout<<"The node "<<i<<" is NOT reachable.\n";
+else
+cout<<"The node "<<i<<" is reachable.\n";
+}
+return 0;
+}
+
+**************************************************************************************************************************************************************************************
+
+DFS
+
+
+#include<stdio.h>
+int visit[20],n,adj[20][20],s,count=0;
+
+void dfs(int v)
+{
+  int w;
+  visit[v]=1;
+  count++;
+  for(w=1;w<=n;w++)
+
+    if((adj[v][w]==1) && (visit[w]==0))
+      dfs(w);
+}
+
+
+
+
+void main()
+{
+  int v,w;
+  printf("Enter the no.of vertices:");
+  scanf("%d",&n);
+
+  printf("Enter the adjacency matrix:\n");
+  for(v=1;v<=n;v++)
+    for(w=1;w<=n;w++)
+      scanf("%d",&adj[v][w]);
+
+  for(v=1;v<=n;v++)
+      visit[v]=0;
+
+    dfs(1);
+
+  if(count==n)
+   printf("\nThe graph is connected");
+  else
+   printf("The graph is not connected");
+}
+
+***************************************************************************************************************************************************************************************
+
+Nqueens 
+
+#include<iostream>
+#include<math.h>
+using namespace std;
+int a[10],count=1;
+int place(int pos)
+{
+    for(int i=1;i<pos;i++)
+        if(a[i]==a[pos] || (abs(a[i]-a[pos])==abs(i-pos)))
+            return 0;
+    return 1;
+}
+void print_sol(int n)
+{
+    cout<<"\nSolution "<<count++<<"\n";
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=n;j++)
+        {
+            if(a[i]==j)
+                cout<<"Q\t";
+            else
+                cout<<"*\t";
+        }
+        cout<<"\n";
+    }
+}
+void queen(int n)
+{
+    int k=1;
+    a[k]=0;
+    while(k!=0)
+    {   
+        do
+        {
+            a[k]++;
+        }while(a[k]<=n && !place(k));
+        if(a[k]<=n)
+        {
+            if(k==n)
+                print_sol(n);
+            else
+            {
+                k++;
+                a[k]=0;
+            }
+        }
+        else
+            k--;
+    }
+}
+int main()
+{
+    int n;
+    cout<<"Enter number of queens:-";
+    cin>>n;
+    queen(n);
+    return 0;
+}
+*****************************************************************************************************************************************************************************************
+Nqueens 2
+ 
+#include <bits/stdc++.h>
+#define N 4
+using namespace std;
+ 
+void printSolution(int board[N][N])
+{
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++)
+           if(board[i][j])
+            cout << "Q ";
+           else cout<<". ";
+        printf("\n");
+    }
+}
+
+bool isSafe(int board[N][N], int row, int col)
+{
+    int i, j;
+
+    for (i = 0; i < col; i++)
+        if (board[row][i])
+            return false;
+ 
+
+    for (i = row, j = col; i >= 0 && j >= 0; i--, j--)
+        if (board[i][j])
+            return false;
+ 
+    for (i = row, j = col; j >= 0 && i < N; i++, j--)
+        if (board[i][j])
+            return false;
+ 
+    return true;
+}
+
+bool solveNQUtil(int board[N][N], int col)
+{
+
+     
+    if (col >= N)
+        return true;
+ 
+   
+    for (int i = 0; i < N; i++) {
+    
+          board[i][col] */
+        if (isSafe(board, i, col)) {
+          
+            board[i][col] = 1;
+ 
+          
+            if (solveNQUtil(board, col + 1))
+                return true;
+ 
+
+            board[i][col] = 0; 
+        }
+    }
+ 
+   
+    return false;
+}
+
+bool solveNQ()
+{
+    int board[N][N] = { { 0, 0, 0, 0 },
+                        { 0, 0, 0, 0 },
+                        { 0, 0, 0, 0 },
+                        { 0, 0, 0, 0 } };
+ 
+    if (solveNQUtil(board, 0) == false) {
+        cout << "Solution does not exist";
+        return false;
+    }
+ 
+    printSolution(board);
+    return true;
+}
+ 
+
+int main()
+{
+    solveNQ();
+    return 0;
+}
+*******************************************************************************************************************************************************************************************
+
+8.Dijsktras
+
+#include<stdio.h>
+#define infinity 999
+void dij(int n, int v,int cost[20][20], int dist[]){
+int i,u,count,w,flag[20],min;
+for(i=1;i<=n;i++)
+flag[i]=0, dist[i]=cost[v][i];
+count=2;
+while(count<=n){
+min=99;
+for(w=1;w<=n;w++)
+if(dist[w]<min && !flag[w]) {
+min=dist[w];
+u=w;
+}
+flag[u]=1;
+count++;
+for(w=1;w<=n;w++)
+if((dist[u]+cost[u][w]<dist[w]) && !flag[w])
+dist[w]=dist[u]+cost[u][w];
+}
+}
+int main(){
+int n,v,i,j,cost[20][20],dist[20];
+printf("enter the number of nodes:");
+scanf("%d",&n);
+printf("\n enter the cost matrix:\n");
+for(i=1;i<=n;i++)
+for(j=1;j<=n;j++){
+scanf("%d",&cost[i][j]);
+if(cost[i][j] == 0)
+cost[i][j]=infinity;
+}
+printf("\n enter the source matrix:");
+scanf("%d",&v);
+dij(n,v,cost,dist);
+printf("\n shortest path : \n");
+for(i=1;i<=n;i++)
+if(i!=v)
+printf("%d->%d,cost=%d\n",v,i,dist[i]);
+}
+***************************************************************************************************************************************************************************************
+TSP 2
+
+#include <iostream>
+  
+using namespace std;
+  
+
+const int n = 4;
+
+const int MAX = 1000000;
+
+int dist[n + 1][n + 1] = {
+    { 0, 0, 0, 0, 0 },    { 0, 0, 10, 15, 20 },
+    { 0, 10, 0, 25, 25 }, { 0, 15, 25, 0, 30 },
+    { 0, 20, 25, 30, 0 },
+};
+int memo[n + 1][1 << (n + 1)];
+  
+int fun(int i, int mask)
+{
+    if (mask == ((1 << i) | 3))
+        return dist[1][i];
+
+    if (memo[i][mask] != 0)
+        return memo[i][mask];
+  
+    int res = MAX; // result of this sub-problem
+  
+  
+  
+    for (int j = 1; j <= n; j++)
+        if ((mask & (1 << j)) && j != i && j != 1)
+            res = std::min(res, fun(j, mask & (~(1 << i)))
+                                    + dist[j][i]);
+    return memo[i][mask] = res;
+}
+
+int main()
+{
+    int ans = MAX;
+    for (int i = 1; i <= n; i++)
+       
+        ans = std::min(ans, fun(i, (1 << (n + 1)) - 1)
+                                + dist[i][1]);
+  
+    printf("The cost of most efficient tour = %d", ans);
+  
+    return 0;
+}
+
